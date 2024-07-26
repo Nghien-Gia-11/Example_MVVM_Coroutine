@@ -2,6 +2,7 @@ package com.example.example_mvvm_coroutine.Adapter
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.example_mvvm_coroutine.Model.StopWatch
@@ -28,12 +29,15 @@ class StopWatchAdapter(private var listWatch: List<StopWatch>, private val onCli
         holder.binding.txtSecond.text = listWatch[position].second.toString()
         holder.binding.btnStart.setOnClickListener {
             onClick.onClickStart(position)
+            holder.binding.btnStart.visibility = View.INVISIBLE
         }
         holder.binding.btnPause.setOnClickListener {
             onClick.onClickPause(position)
+            holder.binding.btnContinue.visibility = View.VISIBLE
         }
         holder.binding.btnContinue.setOnClickListener {
             onClick.onClickContinue(position)
+            holder.binding.btnContinue.visibility = View.INVISIBLE
         }
         holder.binding.btnReset.setOnClickListener {
             onClick.onClickReset(position)

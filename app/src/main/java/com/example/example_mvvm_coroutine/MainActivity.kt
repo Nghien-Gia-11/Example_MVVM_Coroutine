@@ -1,6 +1,7 @@
 package com.example.example_mvvm_coroutine
 
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
@@ -41,23 +42,44 @@ class MainActivity : AppCompatActivity(), OnClick {
         viewModel.watch.observe(this@MainActivity) {
             stopWatchAdapter.update(it)
         }
+
+        onClickButton(binding.btnStart) {
+            viewModel.start(0, true)
+            binding.btnStart.visibility = View.INVISIBLE
+        }
+        onClickButton(binding.btnPause) {
+            viewModel.stop(0, true)
+            binding.btnContinue.visibility = View.VISIBLE
+        }
+        onClickButton(binding.btnContinue) {
+            viewModel.continues(0, true)
+            binding.btnContinue.visibility = View.INVISIBLE
+        }
+        onClickButton(binding.btnReset) { viewModel.reset(0, true) }
+
+    }
+
+    private fun onClickButton(btn: View, action: () -> Unit) {
+        btn.setOnClickListener { action() }
     }
 
     override fun onClickStart(pos: Int) {
         Toast.makeText(this@MainActivity, "Start", Toast.LENGTH_LONG).show()
-        viewModel.start(pos)
+        viewModel.start(pos, false)
     }
 
     override fun onClickPause(pos: Int) {
         Toast.makeText(this@MainActivity, "Pause", Toast.LENGTH_LONG).show()
+        viewModel.stop(pos, false)
     }
 
     override fun onClickContinue(pos: Int) {
         Toast.makeText(this@MainActivity, "Continue", Toast.LENGTH_LONG).show()
+        viewModel.continues(pos, false)
     }
 
     override fun onClickReset(pos: Int) {
         Toast.makeText(this@MainActivity, "Reset", Toast.LENGTH_LONG).show()
+        viewModel.reset(pos, false)
     }
-
 }

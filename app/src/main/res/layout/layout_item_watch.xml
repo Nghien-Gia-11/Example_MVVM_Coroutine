@@ -7,8 +7,8 @@
 
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_marginEnd="30dp"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="30dp">
 
         <TextView
             android:id="@+id/txtMinute"
@@ -38,30 +38,31 @@
 
         <ImageButton
             android:id="@+id/btnStart"
-            android:src="@drawable/start"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:src="@drawable/start" />
 
         <ImageButton
             android:id="@+id/btnPause"
-            android:src="@drawable/pause"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:src="@drawable/pause" />
 
         <ImageButton
             android:id="@+id/btnContinue"
-            android:src="@drawable/continues"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:src="@drawable/continues"
+            android:visibility="invisible" />
 
         <ImageButton
             android:id="@+id/btnReset"
-            android:src="@drawable/reset"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:src="@drawable/reset" />
     </LinearLayout>
 </LinearLayout>

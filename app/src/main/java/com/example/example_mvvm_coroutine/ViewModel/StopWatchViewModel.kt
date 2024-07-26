@@ -12,14 +12,15 @@ import kotlinx.coroutines.launch
 
 class StopWatchViewModel : ViewModel() {
 
-    private var _watch = MutableLiveData<List<StopWatch>>(List(5){StopWatch()})
+    private var _watch = MutableLiveData<List<StopWatch>>(List(5) { StopWatch() })
     val watch: LiveData<List<StopWatch>> get() = _watch
 
-    private val jobs = mutableMapOf<Int, Job?>()
+    private var jobs = mutableMapOf<Int, Job?>()
 
-    fun start(index: Int) {
+    fun start(index: Int, check: Boolean) {
         val current = _watch.value ?: emptyList()
-        if (jobs[index] == null) {
+        if (!check) {
+            jobs[index]?.cancel()
             jobs[index] = viewModelScope.launch(Dispatchers.Main) {
                 while (true) {
                     delay(1000)
@@ -32,32 +33,61 @@ class StopWatchViewModel : ViewModel() {
                 }
             }
         } else {
-            jobs[index]?.cancel()
-            jobs[index] = null
-        }
-    }
-
-    fun stop(index: Int){
-        val current = _watch.value ?: emptyList()
-        if (jobs[index] == null) {
-            jobs[index] = viewModelScope.launch(Dispatchers.Main) {
-                while (true) {
-                    delay(1000)
-                    current[index].second++
-                    if (current[index].second == 59) {
-                        current[index].minute += 1
-                        current[index].second = 0
+            for (i in 0..4){
+                jobs[i] = null
+            }
+            jobs.forEach { (_, job) ->
+                job?.cancel()
+            }
+            jobs.forEach { (pos, _) ->
+                jobs[pos] = viewModelScope.launch(Dispatchers.Main) {
+                    while (true) {
+                        delay(1000)
+                        current[pos].second++
+                        if (current[pos].second == 59) {
+                            current[pos].second = 0
+                            current[pos].minute += 1
+                        }
+                        _watch.value = current
                     }
-                    _watch.value = current
                 }
             }
-        } else {
-            jobs[index]?.cancel()
-            jobs[index] = null
         }
     }
 
+    fun stop(index: Int, check: Boolean) {
+        if (!check) {
+            jobs[index]?.cancel()
+            jobs[index] = null
+        } else {
+            jobs.forEach { (pos, _) ->
+                jobs[pos]?.cancel()
+                jobs[pos] = null
+            }
+        }
+    }
 
+    fun continues(index: Int, check: Boolean) {
+        start(index, check)
+    }
 
+    fun reset(index: Int, check: Boolean) {
+        val current = _watch.value ?: emptyList()
+        if (!check) {
+            jobs[index] = viewModelScope.launch(Dispatchers.Main) {
+                current[index].second = 0
+                current[index].minute = 0
+                _watch.value = current
+            }
+        } else {
+            jobs.forEach { (pos, _) ->
+                jobs[pos] = viewModelScope.launch {
+                    current[pos].second = 0
+                    current[pos].minute = 0
+                }
+                _watch.value = current
+            }
+        }
+    }
 
 }

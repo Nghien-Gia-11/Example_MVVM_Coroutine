@@ -14,10 +14,10 @@ import com.example.example_mvvm_coroutine.OnClickRecyclerView.OnClick
 import com.example.example_mvvm_coroutine.ViewModel.StopWatchViewModel
 import com.example.example_mvvm_coroutine.databinding.ActivityMainBinding
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), OnClick {
 
-    private lateinit var binding : ActivityMainBinding
-    private val viewModel : StopWatchViewModel by viewModels()
+    private lateinit var binding: ActivityMainBinding
+    private val viewModel: StopWatchViewModel by viewModels()
 
     private lateinit var stopWatchAdapter: StopWatchAdapter
 
@@ -27,30 +27,37 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        stopWatchAdapter = StopWatchAdapter(3,20, object : OnClick{
-            override fun onClickStart(pos: Int) {
-                Toast.makeText(this@MainActivity, "Start", Toast.LENGTH_LONG).show()
-            }
-
-            override fun onClickPause(pos: Int) {
-                Toast.makeText(this@MainActivity, "Pause", Toast.LENGTH_LONG).show()
-            }
-
-            override fun onClickContinue(pos: Int) {
-                Toast.makeText(this@MainActivity, "Continue", Toast.LENGTH_LONG).show()
-            }
-
-            override fun onClickReset(pos: Int) {
-                Toast.makeText(this@MainActivity, "Reset", Toast.LENGTH_LONG).show()
-            }
-
-        })
-
+        stopWatchAdapter = StopWatchAdapter(emptyList(), this)
         binding.rvStopWatch.apply {
             adapter = stopWatchAdapter
             layoutManager = LinearLayoutManager(this@MainActivity)
-            addItemDecoration(DividerItemDecoration(this@MainActivity, DividerItemDecoration.VERTICAL))
+            addItemDecoration(
+                DividerItemDecoration(
+                    this@MainActivity,
+                    DividerItemDecoration.VERTICAL
+                )
+            )
         }
-
+        viewModel.watch.observe(this@MainActivity) {
+            stopWatchAdapter.update(it)
+        }
     }
+
+    override fun onClickStart(pos: Int) {
+        Toast.makeText(this@MainActivity, "Start", Toast.LENGTH_LONG).show()
+        viewModel.start(pos)
+    }
+
+    override fun onClickPause(pos: Int) {
+        Toast.makeText(this@MainActivity, "Pause", Toast.LENGTH_LONG).show()
+    }
+
+    override fun onClickContinue(pos: Int) {
+        Toast.makeText(this@MainActivity, "Continue", Toast.LENGTH_LONG).show()
+    }
+
+    override fun onClickReset(pos: Int) {
+        Toast.makeText(this@MainActivity, "Reset", Toast.LENGTH_LONG).show()
+    }
+
 }

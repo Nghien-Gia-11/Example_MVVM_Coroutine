@@ -43,16 +43,19 @@ class MainActivity : AppCompatActivity(), OnClick {
             stopWatchAdapter.update(it)
         }
 
+        // khi start đc ấn thì sẽ invisible đi
         onClickButton(binding.btnStart) {
             viewModel.start(0, true)
             binding.btnStart.visibility = View.INVISIBLE
         }
+        // pause được ấn thì continue mới được hiện lên
         onClickButton(binding.btnPause) {
             viewModel.stop(0, true)
             binding.btnContinue.visibility = View.VISIBLE
         }
+        // continue ấn xong cũng bị ẩn đi, khi nào pause được ấn lại thì mới được hiện lên
         onClickButton(binding.btnContinue) {
-            viewModel.continues(0, true)
+            viewModel.continues(0, true) // khi check = true thì thực hiện toàn bộ item trong recycler view
             binding.btnContinue.visibility = View.INVISIBLE
         }
         onClickButton(binding.btnReset) { viewModel.reset(0, true) }
@@ -65,7 +68,7 @@ class MainActivity : AppCompatActivity(), OnClick {
 
     override fun onClickStart(pos: Int) {
         Toast.makeText(this@MainActivity, "Start", Toast.LENGTH_LONG).show()
-        viewModel.start(pos, false)
+        viewModel.start(pos, false) // khi check = false thì thực hiện từng item trong recyclerview
     }
 
     override fun onClickPause(pos: Int) {
